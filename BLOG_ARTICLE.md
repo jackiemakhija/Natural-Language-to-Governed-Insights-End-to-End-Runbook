@@ -14,7 +14,12 @@ This is the promise of AI-powered analytics. Yet for most enterprises, it remain
 
 The issue is not access to data, nor the absence of AI. The real challenge is **trust at scale**. Business users depend on technical specialists because answers live behind SQL and DAX logic. When teams answer the same question differently due to inconsistent KPI definitions, confidence erodes and decision-making slows.
 
-This runbook presents a practical, end-to-end blueprint for delivering **Natural Language to Insights** using governed semantic models in Microsoft Fabric. By anchoring AI interactions to certified KPIs, Row-Level Security (RLS), and enterprise policies, organizations can safely scale conversational analytics from experimentation to executive decision-making.
+This runbook presents a practical, end-to-end blueprint for delivering **Natural Language to Insights** using governed semantic models in Microsoft Fabric. By anchoring AI interactions to certified KPIs, Row-Level Security (RLS), and enterprise policies, organizations can safely scale conversational analytics from experimentation to executive decision-making. Most organizations already define KPIs and security in the semantic model—this blueprint shows how to expose them safely via natural language, with governance intact.
+
+**Why not just use Microsoft Fabric Data Agents?**
+- Use **Fabric Data Agents** when you want a fully managed, fast start, standard BI NL experience.
+- Use **this custom stack** when you need advanced reasoning, custom tools/workflows, or an offline/local LLM with strict data residency.
+- In both cases, semantic model governance and RLS remain the contract; here, ExecuteQueries keeps queries inside Power BI and Foundry runs locally so data never leaves your network.
 
 ---
 
