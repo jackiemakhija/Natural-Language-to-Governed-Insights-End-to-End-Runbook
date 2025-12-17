@@ -22,17 +22,9 @@ This runbook presents a practical, end-to-end blueprint for delivering **Natural
 
 This solution connects three key components to enable natural language queries over governed data:
 
-```
-User Question (Natural Language)
-    ↓
-Foundry Local LLM (generates DAX)
-    ↓
-Power BI Semantic Model (governed KPIs + RLS)
-    ↓
-Power BI ExecuteQueries API
-    ↓
-Results + Insights
-```
+**High-level execution path:** Natural language question → Foundry Local LLM (generates DAX) → Power BI Semantic Model (certified KPIs + RLS) → ExecuteQueries API → Results (with optional narrative).
+
+**Why it stays governed:** The semantic model enforces certified KPIs and RLS; ExecuteQueries runs inside Power BI so security/audit apply; Foundry runs locally so no data leaves your network. Expect ~3–5s NL→DAX generation and sub-second ExecuteQueries for common KPIs.
 
 **The complete solution includes:**
 - ✅ A Fabric Warehouse with a star schema (DimDate + FactSales)
