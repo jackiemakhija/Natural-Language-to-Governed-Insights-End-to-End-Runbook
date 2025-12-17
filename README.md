@@ -1,5 +1,7 @@
 # Foundry Local + Fabric Semantic Model Integration
 
+Turn natural language into governed Power BI insights — end-to-end.
+
 A comprehensive Streamlit application that combines **Foundry Local** (local LLM inference) with **Microsoft Fabric Semantic Models** for intelligent natural language to DAX query generation and execution.
 
 ## Features
