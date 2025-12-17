@@ -1,0 +1,153 @@
+================================================================================
+RUNBOOK CODE → FILE LOCATION MAPPING
+================================================================================
+
+When you find code in the NL_to_Governed_Insights_End_to_End_Runbook_WITH_CODE_REFS.docx,
+it now points to the actual implementation file. Use this quick reference:
+
+PYTHON MODULES (Business Logic)
+================================================================================
+📁 modules/token_manager.py
+   • acquire_token_azure_cli() - Get token from Azure CLI
+   • acquire_token_app_registration() - Get token from App Registration
+   • is_token_valid() - Check token expiry
+   • get_auth_headers() - Format Authorization header
+
+📁 modules/workspace_manager.py
+   • fetch_workspaces() - List all accessible workspaces
+   • fetch_datasets() - List datasets in a workspace
+   • validate_dataset_access() - Check permissions
+   • get_dataset_tables() - Get table metadata
+
+📁 modules/fabric_dax_generator.py
+   • generate_dax() - LLM generates DAX from natural language
+   • validate_dax() - Basic DAX syntax validation
+   • refine_dax() - Improve DAX based on feedback
+   • extract_dax_from_response() - Clean LLM response
+
+📁 modules/power_bi_executor.py
+   • execute_query() - Run DAX against semantic model
+   • parse_results_to_dataframe() - Convert results to DataFrame
+   • format_results_as_json() - Export as JSON
+   • format_results_as_csv() - Export as CSV
+
+STREAMLIT PAGES (User Interface)
+================================================================================
+📁 pages/workspace_config.py
+   • workspace_config_page() - Settings page
+   • Authentication workflow
+   • Workspace/dataset selection
+
+📁 pages/semantic_query.py
+   • semantic_query_page() - Semantic Query page
+   • Natural language input
+   • DAX generation & execution
+   • Results display
+
+📁 app.py
+   • Main multi-page router
+   • Chat page with model selection
+   • Model routing logic (auto vs manual)
+
+SQL EXAMPLES
+================================================================================
+📁 sql/sample_warehouse_setup.sql
+   • CREATE TABLE dbo.DimDate - Dimension table with dates
+   • CREATE TABLE dbo.FactSales - Fact table with sales data
+   • INSERT scripts - Populate sample data
+   • Aggregation queries - Example SQL analysis
+
+DAX EXAMPLES
+================================================================================
+📁 dax/sample_queries.dax
+   1. Total Revenue - Simple ROW query
+   2. Revenue This Year - YTD calculation
+   3. Revenue by Month - SUMMARIZE query
+   4. Revenue by Year - Annual aggregation
+   5. Top Performing Months - FILTER with threshold
+   6. Profit Margin Analysis - Calculated measures
+   7. Year-over-Year Comparison - DATEADD function
+   8. Top Products - TOPN ranking
+   9. Revenue Trend - Running totals
+   10. Segmented Analysis - Multi-dimensional
+
+SETUP & AUTOMATION SCRIPTS
+================================================================================
+📁 scripts/setup_foundry.sh
+   • Foundry Local installation
+   • Service startup commands
+   • Model deployment
+
+📁 scripts/setup_auth_azure.ps1
+   • Azure CLI login
+   • Token acquisition
+   • Environment setup
+
+DOCUMENTATION
+================================================================================
+📁 README.md
+   • Full setup guide
+   • Usage instructions
+   • Architecture overview
+
+📁 INDEX.md
+   • Package overview
+   • Quick start
+   • File organization
+
+📁 RUNBOOK_CODE_MAPPING.md
+   • Maps runbook sections to files
+   • Quick lookup table
+   • Detailed workflow descriptions
+
+📁 CODE_REFERENCE_GUIDE.md
+   • Code pattern → file location
+   • Function index
+   • Quick reference
+
+================================================================================
+HOW TO USE THIS MAPPING
+================================================================================
+
+1. Open: NL_to_Governed_Insights_End_to_End_Runbook_WITH_CODE_REFS.docx
+2. Find: Code snippet you're interested in
+3. Look: At the highlighted reference (e.g., "📁 See: modules/token_manager.py")
+4. Open: The referenced file in this package
+5. Study: The actual implementation
+6. Adapt: For your specific needs
+
+================================================================================
+QUICK LOOKUP BY TOPIC
+================================================================================
+
+Authentication:        modules/token_manager.py
+Workspaces:           modules/workspace_manager.py
+DAX Generation:       modules/fabric_dax_generator.py
+Query Execution:      modules/power_bi_executor.py
+Chat Interface:       app.py
+Settings Page:        pages/workspace_config.py
+Semantic Query Page:  pages/semantic_query.py
+SQL Setup:            sql/sample_warehouse_setup.sql
+DAX Examples:         dax/sample_queries.dax
+Foundry Setup:        scripts/setup_foundry.sh
+Azure Auth:           scripts/setup_auth_azure.ps1
+
+================================================================================
+FILE PATHS FOR QUICK COPY/PASTE
+================================================================================
+
+modules/token_manager.py
+modules/workspace_manager.py
+modules/fabric_dax_generator.py
+modules/power_bi_executor.py
+pages/workspace_config.py
+pages/semantic_query.py
+sql/sample_warehouse_setup.sql
+dax/sample_queries.dax
+scripts/setup_foundry.sh
+scripts/setup_auth_azure.ps1
+
+================================================================================
+Last Updated: December 17, 2025
+Status: All code locations mapped and verified
+================================================================================

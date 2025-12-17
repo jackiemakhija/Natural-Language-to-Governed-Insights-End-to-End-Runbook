@@ -1,0 +1,156 @@
+-- DAX Query Examples from NL_to_Governed_Insights_End_to_End_Runbook
+-- These are example DAX queries that can be generated from natural language
+
+-- ============================================================
+-- Example 1: Total Revenue (Simple ROW query)
+-- Natural Language: "What is total revenue?"
+-- ============================================================
+EVALUATE ROW(
+  "Total Revenue", [Total Revenue]
+)
+
+-- ============================================================
+-- Example 2: Total Revenue This Year
+-- Natural Language: "Total revenue this year"
+-- ============================================================
+EVALUATE ROW(
+  "Total Revenue YTD", 
+  CALCULATE(
+    [Total Revenue],
+    DATESYTD(DimDate[Date])
+  )
+)
+
+-- ============================================================
+-- Example 3: Revenue by Month
+-- Natural Language: "Show revenue by month"
+-- ============================================================
+EVALUATE SUMMARIZE(
+  ALL(DimDate),
+  DimDate[MonthName],
+  "Total Revenue", [Total Revenue],
+  "Total Cost", [Total Cost],
+  "Profit", [Profit]
+)
+ORDER BY DimDate[MonthNumber] DESC
+
+-- ============================================================
+-- Example 4: Revenue by Year
+-- Natural Language: "Revenue by year"
+-- ============================================================
+EVALUATE SUMMARIZE(
+  ALL(DimDate),
+  DimDate[Year],
+  "Total Revenue", [Total Revenue],
+  "Total Quantity", [Total Quantity],
+  "Avg Revenue", [Average Revenue]
+)
+ORDER BY DimDate[Year] DESC
+
+-- ============================================================
+-- Example 5: Top Performing Months (filtered)
+-- Natural Language: "Which months had revenue over $100K?"
+-- ============================================================
+EVALUATE FILTER(
+  SUMMARIZE(
+    ALL(DimDate),
+    DimDate[MonthName],
+    "Total Revenue", [Total Revenue]
+  ),
+  [Total Revenue] > 100000
+)
+ORDER BY [Total Revenue] DESC
+
+-- ============================================================
+-- Example 6: Profit Margin Analysis
+-- Natural Language: "Show profit margin by month"
+-- ============================================================
+EVALUATE SUMMARIZE(
+  ALL(DimDate),
+  DimDate[MonthName],
+  DimDate[Year],
+  "Total Revenue", [Total Revenue],
+  "Total Cost", [Total Cost],
+  "Profit", [Profit],
+  "Profit Margin %", [Profit Margin %]
+)
+ORDER BY DimDate[Year] DESC, DimDate[MonthNumber] DESC
+
+-- ============================================================
+-- Example 7: Year-over-Year Comparison
+-- Natural Language: "Compare revenue this year vs last year"
+-- ============================================================
+EVALUATE SUMMARIZE(
+  VALUES(DimDate[Year]),
+  DimDate[Year],
+  "Total Revenue", [Total Revenue],
+  "Prior Year Revenue", CALCULATE(
+    [Total Revenue],
+    DATEADD(DimDate[Date], -1, YEAR)
+  ),
+  "YoY Growth %", 
+  DIVIDE(
+    [Total Revenue] - CALCULATE([Total Revenue], DATEADD(DimDate[Date], -1, YEAR)),
+    CALCULATE([Total Revenue], DATEADD(DimDate[Date], -1, YEAR)),
+    0
+  )
+)
+
+-- ============================================================
+-- Example 8: Top Products by Revenue
+-- Natural Language: "Show top 5 products by revenue"
+-- ============================================================
+EVALUATE TOPN(
+  5,
+  SUMMARIZE(
+    FactSales,
+    FactSales[ProductId],
+    "Total Revenue", [Total Revenue],
+    "Units Sold", [Total Quantity]
+  ),
+  [Total Revenue],
+  DESC
+)
+
+-- ============================================================
+-- Example 9: Revenue Trend (running total)
+-- Natural Language: "Show daily revenue trend"
+-- ============================================================
+EVALUATE SUMMARIZE(
+  ALL(DimDate),
+  DimDate[Date],
+  "Daily Revenue", [Total Revenue],
+  "Running Total", CALCULATE(
+    [Total Revenue],
+    FILTER(
+      ALL(DimDate),
+      DimDate[Date] <= MAX(DimDate[Date])
+    )
+  )
+)
+ORDER BY DimDate[Date] ASC
+
+-- ============================================================
+-- Example 10: Segmented Analysis
+-- Natural Language: "Revenue by month and segment"
+-- ============================================================
+EVALUATE SUMMARIZE(
+  ALL(DimDate, FactSales[Segment]),
+  DimDate[MonthName],
+  FactSales[Segment],
+  "Total Revenue", [Total Revenue],
+  "Total Cost", [Total Cost],
+  "Transaction Count", COUNTA(FactSales[SalesId])
+)
+ORDER BY DimDate[MonthNumber] DESC
+
+-- ============================================================
+-- NOTES on DAX Measures
+-- These should be defined in your Power BI Semantic Model:
+-- ============================================================
+-- [Total Revenue] = SUM(FactSales[Revenue])
+-- [Total Cost] = SUM(FactSales[Cost])
+-- [Profit] = [Total Revenue] - [Total Cost]
+-- [Profit Margin %] = DIVIDE([Profit], [Total Revenue])
+-- [Average Revenue] = AVERAGE(FactSales[Revenue])
+-- [Total Quantity] = SUM(FactSales[Quantity])
