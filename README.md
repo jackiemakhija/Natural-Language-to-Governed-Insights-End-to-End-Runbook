@@ -14,91 +14,151 @@ Turn natural language into governed Power BI insights — end-to-end.
 - Plain-text runbook: https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/docs/runbook_extracted.md
 - Note: A .pbit template is not included; use your existing semantic model or build one as described below.
 
-## Implementation Steps (follow in order)
+## Getting Started: Follow These Sections
 
-### 1. Build Data Foundation
-Create a Fabric Workspace and a Warehouse with your dimensional data.
-- Reference SQL: https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/sql/sample_warehouse_setup.sql
-- Load tables: DimDate, FactSales (or your domain data)
-- **ACTION:** After creation, copy and save your **Workspace ID** — you'll need it for step 4
+### 🏗️ Section 1: Build Your Data Foundation
+Start by creating a Fabric Workspace and populating it with dimensional data that will power your semantic model.
 
-### 2. Create Semantic Model
-Define governed KPIs as certified DAX measures in Power BI, then publish to Fabric.
-- Reference DAX patterns: https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/dax/sample_queries.dax
-- Create measures (e.g., [Total Revenue], [Profit Margin])
-- Publish the dataset/semantic model to your Fabric workspace (from step 1)
-- **ACTION:** After publishing, copy and save your **Dataset ID** — you'll need it for step 4
+**What you'll do:**
+- Create a Fabric Workspace in your Power BI tenant
+- Set up a new Warehouse to house your dimensional data
+- Load sample or production data using SQL DDL and ETL
 
-### 3. Start Foundry Local
-Install and run the local LLM service to generate DAX from natural language.
+**Reference SQL script:**
+https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/sql/sample_warehouse_setup.sql
+
+This script includes:
+- DimDate, FactSales table definitions
+- Sample data loads
+- Data quality validations
+
+**After you complete this section:**
+Copy and save your **Workspace ID** — you'll need it when configuring the Streamlit app.
+
+---
+
+### 📊 Section 2: Define Governed KPIs with DAX
+Design your semantic model in Power BI by creating certified DAX measures that represent your organization's governed KPIs.
+
+**What you'll do:**
+- Open Power BI Desktop
+- Connect to your Fabric Warehouse (created in Section 1)
+- Create DAX measures for key metrics (e.g., [Total Revenue], [Profit Margin], [YoY Growth])
+- Publish the dataset/semantic model to your Fabric workspace
+
+**Reference DAX patterns:**
+https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/dax/sample_queries.dax
+
+This reference includes:
+- Common aggregation patterns
+- Year-over-year calculations
+- Filtering and contextual KPIs
+
+**After you complete this section:**
+Copy and save your **Dataset ID** (also called Semantic Model ID) — you'll need it when configuring the app.
+
+---
+
+### 🤖 Section 3: Start the Local LLM Service (Foundry)
+Set up the Foundry LLM service on your machine to enable natural language to DAX translation.
+
+**What you'll do:**
+- Start the Foundry service (if not already running)
+- Load the language model
+- Verify the service is accessible on localhost:51970
+
+**Run these commands:**
 ```powershell
 foundry service start
 foundry model run phi-4-mini
-# Verify it's running:
+```
+
+**Verify it's working:**
+```powershell
 Invoke-WebRequest http://127.0.0.1:51970/v1/models -UseBasicParsing
 ```
-- Expected output: HTTP 200 with list of available models
 
-### 4. Deploy Streamlit App
-Clone the repo, set up environment, and configure credentials.
+**Expected response:**
+HTTP 200 status with a list of available models (including phi-4-mini)
 
-**4a. Clone and install:**
+**Note:** This service runs locally and does not require internet connectivity for inference. It powers the natural language query generation in the Streamlit app.
+
+---
+
+### 🚀 Section 4: Deploy and Configure the Streamlit Application
+Clone the repository, set up your Python environment, and configure credentials to connect to Fabric.
+
+**Clone the repository:**
 ```bash
 git clone https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook.git
 cd Natural-Language-to-Governed-Insights-End-to-End-Runbook
+```
+
+**Create and activate virtual environment:**
+```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 ```
 
-**4b. Configure .env:**
+**Configure environment variables:**
 ```bash
 copy .env.example .env
 ```
-Edit `.env` and set (from steps 1-2):
+
+Open `.env` and populate these values (from Sections 1 and 2):
 ```
-POWER_BI_WORKSPACE_ID=<your workspace ID from step 1>
-POWER_BI_DATASET_ID=<your dataset ID from step 2>
+POWER_BI_WORKSPACE_ID=<your workspace ID from Section 1>
+POWER_BI_DATASET_ID=<your dataset ID from Section 2>
 AZURE_TENANT_ID=<your Azure tenant ID>
 FOUNDRY_BASE=http://127.0.0.1:51970/v1
 ```
 
-**4c. Run the app:**
+**Launch the app:**
 ```bash
 streamlit run app.py
 ```
-- App opens at http://localhost:8501
 
-### 5. Test and Validate
-Verify the end-to-end flow with sample queries and expected results.
+The app will open at **http://localhost:8501**
 
-**5a. Authenticate and configure (Settings page):**
-- Click "Settings" in the sidebar
-- Choose auth method: Azure CLI (dev) or App Registration (prod)
-  - For CLI: run `az login` first
-- Select your Workspace (from step 1)
-- Select your Semantic Model/Dataset (from step 2)
-- Click "Validate Connection" — should confirm success
+---
 
-**5b. Test query generation (Semantic Query page):**
-- Click "Semantic Query" in the sidebar
-- Type: `What is total revenue?`
-- Click "Generate DAX"
-- Review the generated DAX query
-- Click "Execute Query"
-- Verify results match your expected KPI from step 2
+### ✅ Section 5: Test and Validate the End-to-End Flow
+Verify that authentication, query generation, and execution all work as expected.
 
-**5c. Additional tests:**
-- Try: `Revenue by month for this year`
-- Try: `Top 5 products by quantity sold`
-- Export results as CSV/JSON
-- Compare DAX against sample patterns: https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/dax/sample_queries.dax
+**Step 5a: Authenticate and Select Your Data**
+- Navigate to the **Settings** page in the sidebar
+- Choose an authentication method:
+  - **Azure CLI** (for development): Run `az login` first, then select "Azure CLI"
+  - **App Registration** (for production): Provide app credentials
+- Select your Workspace (created in Section 1)
+- Select your Semantic Model/Dataset (created in Section 2)
+- Click **"Validate Connection"** — you should see a success message
 
-**Expected Outcomes:**
-- ✅ Settings page successfully authenticates and shows your workspace/dataset
-- ✅ Semantic Query page generates valid DAX queries
+**Step 5b: Generate and Execute Your First Query**
+- Click the **Semantic Query** page in the sidebar
+- Enter a natural language question: `What is total revenue?`
+- Click **"Generate DAX"** — review the generated DAX query
+- Click **"Execute Query"** — results should appear below
+- Verify results match your expected KPI
+
+**Step 5c: Test Additional Scenarios**
+Try these sample queries to exercise different capabilities:
+- `Revenue by month for this year`
+- `Top 5 products by quantity sold`
+- `What is the profit margin trend?`
+
+Compare the generated DAX against the reference patterns:
+https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/dax/sample_queries.dax
+
+Export results as CSV or JSON to validate data integrity.
+
+**Expected outcomes (all should pass):**
+- ✅ Settings page successfully authenticates and displays your workspace and dataset
+- ✅ Semantic Query page generates syntactically valid DAX queries
 - ✅ Queries execute without errors and return expected results
-- ✅ Results can be exported in CSV/JSON format
+- ✅ Results can be exported in multiple formats (CSV, JSON)
+- ✅ Generated DAX queries align with your governance guidelines
 
 A comprehensive Streamlit application that combines **Foundry Local** (local LLM inference) with **Microsoft Fabric Semantic Models** for intelligent natural language to DAX query generation and execution.
 
