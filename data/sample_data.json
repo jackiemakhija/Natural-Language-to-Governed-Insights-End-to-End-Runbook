@@ -1,0 +1,42 @@
+{
+  "queries": [
+    {
+      "id": "q001",
+      "text": "What are the main customer complaints this month?",
+      "timestamp": "2025-12-01T10:00:00Z",
+      "user": "analyst1"
+    },
+    {
+      "id": "q002",
+      "text": "Show me the positive feedback trends",
+      "timestamp": "2025-12-05T14:30:00Z",
+      "user": "manager1"
+    },
+    {
+      "id": "q003",
+      "text": "Identify areas needing improvement in customer service",
+      "timestamp": "2025-12-10T09:15:00Z",
+      "user": "director1"
+    }
+  ],
+  "sample_feedback": [
+    {
+      "id": "fb001",
+      "text": "The customer service was excellent and resolved my issue quickly.",
+      "category": "support",
+      "date": "2025-12-15"
+    },
+    {
+      "id": "fb002",
+      "text": "Very disappointed with the long wait times and lack of communication.",
+      "category": "support",
+      "date": "2025-12-16"
+    },
+    {
+      "id": "fb003",
+      "text": "The product quality exceeded my expectations. Great experience overall.",
+      "category": "product",
+      "date": "2025-12-17"
+    }
+  ]
+}
