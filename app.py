@@ -255,7 +255,6 @@ def main():
     """)
     
     st.sidebar.markdown("---")
-    st.sidebar.metric("Queries Processed", st.session_state.query_count)
     
     # Main content
     tab1, tab2, tab3 = st.tabs(["🔍 Analyze Text", "📊 Sample Data", "📈 History"])
@@ -326,6 +325,16 @@ def main():
         else:
             st.info("No analysis history yet. Start by analyzing some text!")
     
+    # Sidebar metrics (updated after interactions)
+    st.sidebar.metric("Queries Processed", st.session_state.query_count)
+    if st.session_state.insights_history:
+        last_insight = st.session_state.insights_history[-1]
+        st.sidebar.metric("Last Sentiment", last_insight['sentiment']['sentiment'].title())
+        st.sidebar.metric("Key Topics", len(last_insight['key_topics']))
+    else:
+        st.sidebar.metric("Last Sentiment", "—")
+        st.sidebar.metric("Key Topics", 0)
+
     # Footer
     st.markdown("---")
     st.markdown("""
