@@ -105,13 +105,38 @@ if 'github_stats_timestamp' not in st.session_state:
     st.session_state.github_stats_timestamp = None
 
 
+def normalize_sentiment_value(value):
+    """Normalize sentiment field to a lowercase string label."""
+    try:
+        if isinstance(value, dict):
+            return str(value.get('sentiment', 'unknown')).lower()
+        if value is None:
+            return 'unknown'
+        return str(value).lower()
+    except Exception:
+        return 'unknown'
+
+
+def extract_topics(insight):
+    """Return a safe list of topics from an insight entry."""
+    topics = insight.get('key_topics', []) if isinstance(insight, dict) else []
+    if topics is None:
+        return []
+    if isinstance(topics, list):
+        return [str(t) for t in topics if t is not None]
+    # Handle unexpected scalar by wrapping into list
+    return [str(topics)]
+
+
 def create_sentiment_distribution_chart(history):
     """Create a pie chart showing sentiment distribution"""
     if not history:
         return None
     
-    sentiments = [insight.get('sentiment', 'unknown') for insight in history]
+    sentiments = [normalize_sentiment_value(insight.get('sentiment')) for insight in history]
     sentiment_counts = Counter(sentiments)
+    if not sentiment_counts:
+        return None
     
     fig = go.Figure(data=[go.Pie(
         labels=list(sentiment_counts.keys()),
@@ -135,6 +160,9 @@ def create_confidence_trend_chart(history):
         return None
     
     df = pd.DataFrame(history)
+    if 'confidence' not in df:
+        return None
+    df['confidence'] = pd.to_numeric(df['confidence'], errors='coerce').fillna(0)
     df['index'] = range(1, len(df) + 1)
     
     fig = go.Figure()
@@ -167,7 +195,7 @@ def create_topics_frequency_chart(history):
     
     all_topics = []
     for insight in history:
-        all_topics.extend(insight.get('key_topics', []))
+        all_topics.extend(extract_topics(insight))
     
     if not all_topics:
         return None
@@ -199,6 +227,14 @@ def get_summary_stats(history):
         return None
     
     df = pd.DataFrame(history)
+
+    if 'sentiment' not in df:
+        return {
+            'total_queries': len(df),
+            'avg_confidence': df['confidence'].mean() if 'confidence' in df else 0,
+            'sentiments': {},
+            'unique_topics': 0
+        }
 
     # Normalize sentiment to simple string values
     def extract_sentiment(value):
@@ -371,6 +407,8 @@ def process_query(query_text, nlp_processor, insights_generator, demo_mode):
                 nlp_result = analyze_text_demo(query_text)
             else:
                 nlp_result = nlp_processor.process_natural_language_query(query_text)
+            if not nlp_result:
+                raise ValueError("No NLP result returned")
             
             # Generate insights
             insight = insights_generator.generate_insight(
@@ -398,7 +436,7 @@ def display_insight(insight, nlp_result):
         return
     
     # Sentiment display
-    sentiment = insight['sentiment']['sentiment']
+    sentiment = normalize_sentiment_value(insight.get('sentiment'))
     sentiment_class = sentiment.lower()
     
     col1, col2, col3 = st.columns(3)
@@ -430,22 +468,22 @@ def display_insight(insight, nlp_result):
     # Detailed results
     st.markdown("### 📊 Analysis Results")
     
-    st.markdown(f"**Summary:** {insight['summary']}")
+    st.markdown(f"**Summary:** {insight.get('summary', 'No summary available')}")
     
     # Key phrases
-    if insight['key_topics']:
+    if insight.get('key_topics'):
         st.markdown("**Key Topics:**")
-        st.write(", ".join(insight['key_topics']))
+        st.write(", ".join(extract_topics(insight)))
     
     # Recommendations
-    if insight['recommendations']:
+    if insight.get('recommendations'):
         st.markdown("**💡 Recommendations:**")
-        for i, rec in enumerate(insight['recommendations'], 1):
+        for i, rec in enumerate(insight.get('recommendations', []), 1):
             st.markdown(f"{i}. {rec}")
     
     # Sentiment confidence scores
     st.markdown("**Sentiment Confidence Scores:**")
-    scores = insight['sentiment']['confidence_scores']
+    scores = insight.get('sentiment', {}).get('confidence_scores', {}) or {'positive': 0, 'neutral': 0, 'negative': 0}
     score_cols = st.columns(3)
     
     with score_cols[0]:
@@ -642,12 +680,15 @@ def main():
             st.markdown("#### 📝 Detailed History")
             
             for idx, insight in enumerate(reversed(st.session_state.insights_history)):
-                with st.expander(f"Query {len(st.session_state.insights_history) - idx} - {insight['sentiment']['sentiment'].title()}"):
-                    st.markdown(f"**Timestamp:** {insight['timestamp']}")
-                    st.markdown(f"**Summary:** {insight['summary']}")
-                    st.markdown(f"**Confidence:** {insight['confidence']:.1%}")
-                    if insight.get('key_topics'):
-                        st.markdown(f"**Topics:** {', '.join(insight['key_topics'])}")
+                sentiment_label = normalize_sentiment_value(insight.get('sentiment')).title()
+                with st.expander(f"Query {len(st.session_state.insights_history) - idx} - {sentiment_label}"):
+                    st.markdown(f"**Timestamp:** {insight.get('timestamp', 'N/A')}")
+                    st.markdown(f"**Summary:** {insight.get('summary', 'No summary available')}")
+                    confidence_val = insight.get('confidence', 0)
+                    st.markdown(f"**Confidence:** {confidence_val:.1%}")
+                    topics_display = ", ".join(extract_topics(insight))
+                    if topics_display:
+                        st.markdown(f"**Topics:** {topics_display}")
             
             if st.button("Clear History"):
                 st.session_state.insights_history = []
