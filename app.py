@@ -221,83 +221,83 @@ def create_topics_frequency_chart(history):
     return fig
 
 
-    def create_sentiment_timeline_chart(history):
-        """Create a stacked area chart showing sentiment counts over time"""
-        if not history:
-            return None
+def create_sentiment_timeline_chart(history):
+    """Create a stacked area chart showing sentiment counts over time"""
+    if not history:
+        return None
 
-        df = pd.DataFrame(history)
-        if 'timestamp' not in df or 'sentiment' not in df:
-            return None
+    df = pd.DataFrame(history)
+    if 'timestamp' not in df or 'sentiment' not in df:
+        return None
 
-        # Normalize timestamp and sentiment
-        df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
-        df = df.dropna(subset=['timestamp'])
-        df['sentiment_normalized'] = df['sentiment'].apply(lambda s: s.get('sentiment', 'unknown') if isinstance(s, dict) else s)
+    # Normalize timestamp and sentiment
+    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+    df = df.dropna(subset=['timestamp'])
+    df['sentiment_normalized'] = df['sentiment'].apply(lambda s: s.get('sentiment', 'unknown') if isinstance(s, dict) else s)
 
-        if df.empty:
-            return None
+    if df.empty:
+        return None
 
-        grouped = df.groupby([df['timestamp'].dt.date, 'sentiment_normalized']).size().reset_index(name='count')
-        fig = px.area(
-            grouped,
-            x='timestamp',
-            y='count',
-            color='sentiment_normalized',
-            title='Sentiment Over Time',
-            color_discrete_map={'positive': '#28a745', 'negative': '#dc3545', 'neutral': '#ffc107'}
-        )
-        fig.update_layout(height=350, legend_title_text='Sentiment', margin=dict(t=50, b=20, l=40, r=20))
-        fig.update_traces(mode='lines')
-        return fig
-
-
-    def create_confidence_distribution_chart(history):
-        """Create a histogram for confidence scores"""
-        if not history:
-            return None
-
-        df = pd.DataFrame(history)
-        if 'confidence' not in df:
-            return None
-
-        df['confidence'] = pd.to_numeric(df['confidence'], errors='coerce')
-        df = df.dropna(subset=['confidence'])
-        if df.empty:
-            return None
-
-        fig = px.histogram(
-            df,
-            x='confidence',
-            nbins=10,
-            title='Confidence Distribution',
-            color_discrete_sequence=['#1E88E5']
-        )
-        fig.update_layout(height=350, margin=dict(t=50, b=40, l=40, r=20), xaxis_title='Confidence', yaxis_title='Frequency')
-        return fig
+    grouped = df.groupby([df['timestamp'].dt.date, 'sentiment_normalized']).size().reset_index(name='count')
+    fig = px.area(
+        grouped,
+        x='timestamp',
+        y='count',
+        color='sentiment_normalized',
+        title='Sentiment Over Time',
+        color_discrete_map={'positive': '#28a745', 'negative': '#dc3545', 'neutral': '#ffc107'}
+    )
+    fig.update_layout(height=350, legend_title_text='Sentiment', margin=dict(t=50, b=20, l=40, r=20))
+    fig.update_traces(mode='lines')
+    return fig
 
 
-    def create_topics_treemap(history):
-        """Create a treemap for topic importance"""
-        if not history:
-            return None
+def create_confidence_distribution_chart(history):
+    """Create a histogram for confidence scores"""
+    if not history:
+        return None
 
-        all_topics = []
-        for insight in history:
-            all_topics.extend(extract_topics(insight))
+    df = pd.DataFrame(history)
+    if 'confidence' not in df:
+        return None
 
-        if not all_topics:
-            return None
+    df['confidence'] = pd.to_numeric(df['confidence'], errors='coerce')
+    df = df.dropna(subset=['confidence'])
+    if df.empty:
+        return None
 
-        topic_counts = Counter(all_topics)
-        df = pd.DataFrame({
-            'topic': list(topic_counts.keys()),
-            'count': list(topic_counts.values())
-        })
+    fig = px.histogram(
+        df,
+        x='confidence',
+        nbins=10,
+        title='Confidence Distribution',
+        color_discrete_sequence=['#1E88E5']
+    )
+    fig.update_layout(height=350, margin=dict(t=50, b=40, l=40, r=20), xaxis_title='Confidence', yaxis_title='Frequency')
+    return fig
 
-        fig = px.treemap(df, path=['topic'], values='count', title='Topic Coverage')
-        fig.update_layout(height=350, margin=dict(t=50, b=20, l=10, r=10))
-        return fig
+
+def create_topics_treemap(history):
+    """Create a treemap for topic importance"""
+    if not history:
+        return None
+
+    all_topics = []
+    for insight in history:
+        all_topics.extend(extract_topics(insight))
+
+    if not all_topics:
+        return None
+
+    topic_counts = Counter(all_topics)
+    df = pd.DataFrame({
+        'topic': list(topic_counts.keys()),
+        'count': list(topic_counts.values())
+    })
+
+    fig = px.treemap(df, path=['topic'], values='count', title='Topic Coverage')
+    fig.update_layout(height=350, margin=dict(t=50, b=20, l=10, r=10))
+    return fig
 
 
 def get_summary_stats(history):
