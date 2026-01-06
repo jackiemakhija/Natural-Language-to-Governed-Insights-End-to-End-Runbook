@@ -278,7 +278,13 @@ def fetch_github_stats():
         return st.session_state.github_stats
     
     try:
-        headers = {"Accept": "application/vnd.github.v3+json"}
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Natural-Language-to-Governed-Insights-App"
+        }
+        token = os.getenv("GITHUB_TOKEN") or os.getenv("HF_GITHUB_TOKEN")
+        if token:
+            headers["Authorization"] = f"Bearer {token}"
         response = requests.get(
             f"https://api.github.com/repos/{GITHUB_REPO}",
             headers=headers,
@@ -305,6 +311,8 @@ def fetch_github_stats():
             return stats
         else:
             logger.warning(f"GitHub API error: {response.status_code} - {response.text}")
+            if response.status_code == 403:
+                logger.warning("GitHub API rate limit or auth required. Set GITHUB_TOKEN or HF_GITHUB_TOKEN.")
             
     except requests.exceptions.Timeout:
         logger.warning("GitHub API request timeout")
@@ -541,6 +549,9 @@ def main():
     
     repo_url = github_stats.get("url", f"https://github.com/{GITHUB_REPO}")
     st.sidebar.markdown(f"[🔗 View on GitHub →]({repo_url})")
+
+    if stars == 0 and forks == 0:
+        st.sidebar.caption("GitHub stats may show 0 if unauthenticated or rate-limited. Optionally set GITHUB_TOKEN.")
     
     st.sidebar.markdown("---")
     
