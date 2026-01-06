@@ -7,9 +7,10 @@ azure-storage-blob>=12.19.0
 # Web UI
 streamlit>=1.28.0
 
-# Data processing
+# Data processing & visualization
 pandas>=2.0.0
 numpy>=1.24.0
+plotly>=5.17.0
 
 # Utilities
 python-dotenv>=1.0.0

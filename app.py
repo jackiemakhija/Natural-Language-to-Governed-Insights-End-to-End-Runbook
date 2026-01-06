@@ -10,6 +10,10 @@ from pathlib import Path
 from datetime import datetime
 import logging
 import requests
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from collections import Counter
 
 # Import local modules
 from src.nlp_processor import NLPProcessor
@@ -18,6 +22,7 @@ from src.insights_generator import InsightsGenerator
 # Global variables
 QUERY_COUNT = 0
 GITHUB_REPO = "jagjeetmakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook"
+SESSION_FILE = "session_history.json"
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -69,13 +74,148 @@ st.markdown("""
 
 # Initialize session state
 if 'insights_history' not in st.session_state:
-    st.session_state.insights_history = []
+    st.session_state.insights_history = load_session_history()
 if 'query_count' not in st.session_state:
-    st.session_state.query_count = 0
+    st.session_state.query_count = len(st.session_state.insights_history)
 if 'github_stats' not in st.session_state:
     st.session_state.github_stats = None
 if 'github_stats_timestamp' not in st.session_state:
     st.session_state.github_stats_timestamp = None
+
+
+def save_session_history():
+    """Save session history to file for persistence"""
+    try:
+        with open(SESSION_FILE, 'w') as f:
+            json.dump(st.session_state.insights_history, f, indent=2)
+    except Exception as e:
+        logger.warning(f"Failed to save session history: {e}")
+
+
+def load_session_history():
+    """Load session history from file"""
+    try:
+        if os.path.exists(SESSION_FILE):
+            with open(SESSION_FILE, 'r') as f:
+                history = json.load(f)
+                logger.info(f"Loaded {len(history)} items from session history")
+                return history
+    except Exception as e:
+        logger.warning(f"Failed to load session history: {e}")
+    return []
+
+
+def create_sentiment_distribution_chart(history):
+    """Create a pie chart showing sentiment distribution"""
+    if not history:
+        return None
+    
+    sentiments = [insight.get('sentiment', 'unknown') for insight in history]
+    sentiment_counts = Counter(sentiments)
+    
+    fig = go.Figure(data=[go.Pie(
+        labels=list(sentiment_counts.keys()),
+        values=list(sentiment_counts.values()),
+        hole=0.3,
+        marker=dict(colors=['#28a745', '#dc3545', '#ffc107'])
+    )])
+    
+    fig.update_layout(
+        title="Sentiment Distribution",
+        height=300,
+        margin=dict(t=40, b=0, l=0, r=0)
+    )
+    
+    return fig
+
+
+def create_confidence_trend_chart(history):
+    """Create a line chart showing confidence scores over time"""
+    if not history:
+        return None
+    
+    df = pd.DataFrame(history)
+    df['index'] = range(1, len(df) + 1)
+    
+    fig = go.Figure()
+    
+    fig.add_trace(go.Scatter(
+        x=df['index'],
+        y=df['confidence'],
+        mode='lines+markers',
+        name='Confidence',
+        line=dict(color='#007bff', width=2),
+        marker=dict(size=8)
+    ))
+    
+    fig.update_layout(
+        title="Confidence Score Trend",
+        xaxis_title="Analysis Number",
+        yaxis_title="Confidence Score",
+        yaxis=dict(range=[0, 1]),
+        height=300,
+        margin=dict(t=40, b=40, l=40, r=20)
+    )
+    
+    return fig
+
+
+def create_topics_frequency_chart(history):
+    """Create a bar chart of most common topics"""
+    if not history:
+        return None
+    
+    all_topics = []
+    for insight in history:
+        all_topics.extend(insight.get('key_topics', []))
+    
+    if not all_topics:
+        return None
+    
+    topic_counts = Counter(all_topics).most_common(10)
+    topics, counts = zip(*topic_counts)
+    
+    fig = go.Figure(data=[go.Bar(
+        x=list(counts),
+        y=list(topics),
+        orientation='h',
+        marker=dict(color='#17a2b8')
+    )])
+    
+    fig.update_layout(
+        title="Top 10 Topics",
+        xaxis_title="Frequency",
+        yaxis_title="Topic",
+        height=400,
+        margin=dict(t=40, b=40, l=150, r=20)
+    )
+    
+    return fig
+
+
+def get_summary_stats(history):
+    """Calculate summary statistics from history"""
+    if not history:
+        return None
+    
+    df = pd.DataFrame(history)
+    
+    sentiments = df['sentiment'].value_counts().to_dict()
+    avg_confidence = df['confidence'].mean()
+    total_queries = len(df)
+    
+    all_topics = []
+    for insight in history:
+        all_topics.extend(insight.get('key_topics', []))
+    
+    unique_topics = len(set(all_topics))
+    
+    return {
+        'total_queries': total_queries,
+        'avg_confidence': avg_confidence,
+        'sentiments': sentiments,
+        'unique_topics': unique_topics
+    }
 
 
 def fetch_github_stats():
@@ -229,6 +369,9 @@ def process_query(query_text, nlp_processor, insights_generator, demo_mode):
             # Store in history
             st.session_state.insights_history.append(insight)
             st.session_state.query_count += 1
+            
+            # Save session history
+            save_session_history()
             
             return insight, nlp_result
         except Exception as e:
@@ -414,18 +557,90 @@ def main():
                             display_insight(insight, nlp_result)
     
     with tab3:
-        st.markdown("### 📈 Analysis History")
+        st.markdown("### 📈 Analysis History & Insights")
         
         if st.session_state.insights_history:
+            # Summary Statistics
+            stats = get_summary_stats(st.session_state.insights_history)
+            
+            if stats:
+                st.markdown("#### 📊 Summary Statistics")
+                col1, col2, col3, col4 = st.columns(4)
+                
+                with col1:
+                    st.metric("Total Queries", stats['total_queries'])
+                
+                with col2:
+                    st.metric("Avg Confidence", f"{stats['avg_confidence']:.1%}")
+                
+                with col3:
+                    positive_count = stats['sentiments'].get('positive', 0)
+                    st.metric("Positive", positive_count)
+                
+                with col4:
+                    st.metric("Unique Topics", stats['unique_topics'])
+            
+            # Charts
+            st.markdown("#### 📉 Visual Analytics")
+            
+            chart_col1, chart_col2 = st.columns(2)
+            
+            with chart_col1:
+                sentiment_chart = create_sentiment_distribution_chart(st.session_state.insights_history)
+                if sentiment_chart:
+                    st.plotly_chart(sentiment_chart, use_container_width=True)
+            
+            with chart_col2:
+                confidence_chart = create_confidence_trend_chart(st.session_state.insights_history)
+                if confidence_chart:
+                    st.plotly_chart(confidence_chart, use_container_width=True)
+            
+            # Topics frequency
+            topics_chart = create_topics_frequency_chart(st.session_state.insights_history)
+            if topics_chart:
+                st.plotly_chart(topics_chart, use_container_width=True)
+            
+            # Export functionality
+            st.markdown("#### 💾 Export Data")
+            
+            export_col1, export_col2 = st.columns(2)
+            
+            with export_col1:
+                # Convert history to DataFrame for CSV export
+                df = pd.DataFrame(st.session_state.insights_history)
+                csv = df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="📥 Download as CSV",
+                    data=csv,
+                    file_name=f"insights_history_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                    mime="text/csv"
+                )
+            
+            with export_col2:
+                # JSON export
+                json_data = json.dumps(st.session_state.insights_history, indent=2)
+                st.download_button(
+                    label="📥 Download as JSON",
+                    data=json_data,
+                    file_name=f"insights_history_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                    mime="application/json"
+                )
+            
+            # Detailed History
+            st.markdown("#### 📝 Detailed History")
+            
             for idx, insight in enumerate(reversed(st.session_state.insights_history)):
                 with st.expander(f"Query {len(st.session_state.insights_history) - idx} - {insight['sentiment']['sentiment'].title()}"):
                     st.markdown(f"**Timestamp:** {insight['timestamp']}")
                     st.markdown(f"**Summary:** {insight['summary']}")
                     st.markdown(f"**Confidence:** {insight['confidence']:.1%}")
+                    if insight.get('key_topics'):
+                        st.markdown(f"**Topics:** {', '.join(insight['key_topics'])}")
             
             if st.button("Clear History"):
                 st.session_state.insights_history = []
                 st.session_state.query_count = 0
+                save_session_history()
                 st.rerun()
         else:
             st.info("No analysis history yet. Start by analyzing some text!")
