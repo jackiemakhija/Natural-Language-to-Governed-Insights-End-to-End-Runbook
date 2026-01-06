@@ -74,23 +74,66 @@ if 'query_count' not in st.session_state:
     st.session_state.query_count = 0
 if 'github_stats' not in st.session_state:
     st.session_state.github_stats = None
+if 'github_stats_timestamp' not in st.session_state:
+    st.session_state.github_stats_timestamp = None
 
 
 def fetch_github_stats():
-    """Fetch GitHub repository statistics - shows download/engagement metrics"""
+    """Fetch GitHub repository statistics with caching"""
+    import time
+    
+    # Use cached stats if available (cache for 1 hour)
+    current_time = time.time()
+    if (st.session_state.github_stats is not None and 
+        st.session_state.github_stats_timestamp is not None and
+        current_time - st.session_state.github_stats_timestamp < 3600):
+        return st.session_state.github_stats
+    
     try:
-        response = requests.get(f"https://api.github.com/repos/{GITHUB_REPO}", timeout=5)
+        headers = {"Accept": "application/vnd.github.v3+json"}
+        response = requests.get(
+            f"https://api.github.com/repos/{GITHUB_REPO}",
+            headers=headers,
+            timeout=5
+        )
+        
+        logger.info(f"GitHub API response status: {response.status_code}")
+        
         if response.status_code == 200:
             data = response.json()
-            return {
-                "stars": data.get("stargazers_count", 0),
-                "forks": data.get("forks_count", 0),
-                "watchers": data.get("watchers_count", 0),
-                "url": data.get("html_url", "")
+            stats = {
+                "stars": int(data.get("stargazers_count", 0)),
+                "forks": int(data.get("forks_count", 0)),
+                "watchers": int(data.get("watchers_count", 0)),
+                "open_issues": int(data.get("open_issues_count", 0)),
+                "url": str(data.get("html_url", "")),
+                "description": str(data.get("description", ""))
             }
+            
+            # Cache the stats
+            st.session_state.github_stats = stats
+            st.session_state.github_stats_timestamp = current_time
+            logger.info(f"Fetched GitHub stats: {stats}")
+            return stats
+        else:
+            logger.warning(f"GitHub API error: {response.status_code} - {response.text}")
+            
+    except requests.exceptions.Timeout:
+        logger.warning("GitHub API request timeout")
+    except requests.exceptions.ConnectionError:
+        logger.warning("GitHub API connection error")
     except Exception as e:
-        logger.warning(f"Failed to fetch GitHub stats: {e}")
-    return {"stars": 0, "forks": 0, "watchers": 0, "url": ""}
+        logger.error(f"Failed to fetch GitHub stats: {e}", exc_info=True)
+    
+    # Return default or cached values
+    return {
+        "stars": 0,
+        "forks": 0,
+        "watchers": 0,
+        "open_issues": 0,
+        "url": f"https://github.com/{GITHUB_REPO}",
+        "description": "Natural Language to Governed Insights"
+    }
 
 
 
@@ -281,32 +324,42 @@ def main():
     
     st.sidebar.markdown("---")
     
-    # Fetch and display GitHub stats
-    if st.session_state.github_stats is None:
-        st.session_state.github_stats = fetch_github_stats()
-    
-    github_stats = st.session_state.github_stats
+    # Fetch and display GitHub stats with retry logic
+    try:
+        if st.session_state.github_stats is None:
+            with st.sidebar.spinner("Loading GitHub stats..."):
+                st.session_state.github_stats = fetch_github_stats()
+        
+        github_stats = st.session_state.github_stats
+        if github_stats is None:
+            github_stats = fetch_github_stats()
+    except Exception as e:
+        logger.error(f"Error fetching GitHub stats: {e}")
+        github_stats = {"stars": 0, "forks": 0, "url": f"https://github.com/{GITHUB_REPO}"}
     
     st.sidebar.markdown("### 📥 App Downloaded Till Date")
     col1, col2 = st.sidebar.columns(2)
     with col1:
-        st.metric("⭐ GitHub Stars", github_stats.get("stars", 0))
+        stars = github_stats.get("stars", 0)
+        st.metric("⭐ GitHub Stars", f"{stars}")
     with col2:
-        st.metric("🍴 Forks", github_stats.get("forks", 0))
+        forks = github_stats.get("forks", 0)
+        st.metric("🍴 Forks", f"{forks}")
     
-    st.sidebar.markdown(f"[🔗 View on GitHub →]({github_stats.get('url', 'https://github.com/jagjeetmakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook')})")
+    repo_url = github_stats.get("url", f"https://github.com/{GITHUB_REPO}")
+    st.sidebar.markdown(f"[🔗 View on GitHub →]({repo_url})")
     
     st.sidebar.markdown("---")
     
     # Query metrics
-    st.sidebar.metric("Queries Processed", st.session_state.query_count)
+    st.sidebar.metric("📝 Queries Processed", st.session_state.query_count)
     if st.session_state.insights_history:
         last_insight = st.session_state.insights_history[-1]
-        st.sidebar.metric("Last Sentiment", last_insight['sentiment']['sentiment'].title())
-        st.sidebar.metric("Key Topics", len(last_insight['key_topics']))
+        st.sidebar.metric("💬 Last Sentiment", last_insight['sentiment']['sentiment'].title())
+        st.sidebar.metric("🏷️ Key Topics", len(last_insight['key_topics']))
     else:
-        st.sidebar.metric("Last Sentiment", "—")
-        st.sidebar.metric("Key Topics", 0)
+        st.sidebar.metric("💬 Last Sentiment", "—")
+        st.sidebar.metric("🏷️ Key Topics", 0)
     
     # Main content
     tab1, tab2, tab3 = st.tabs(["🔍 Analyze Text", "📊 Sample Data", "📈 History"])
