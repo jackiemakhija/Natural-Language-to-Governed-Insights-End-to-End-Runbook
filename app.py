@@ -199,16 +199,28 @@ def get_summary_stats(history):
         return None
     
     df = pd.DataFrame(history)
-    
-    sentiments = df['sentiment'].value_counts().to_dict()
-    avg_confidence = df['confidence'].mean()
+
+    # Normalize sentiment to simple string values
+    def extract_sentiment(value):
+        if isinstance(value, dict):
+            return value.get('sentiment', 'unknown')
+        return value if value is not None else 'unknown'
+
+    df['sentiment_normalized'] = df['sentiment'].apply(extract_sentiment)
+
+    # Safe sentiment counts
+    sentiments = df['sentiment_normalized'].value_counts(dropna=True).to_dict() if 'sentiment_normalized' in df else {}
+
+    # Safe confidence average
+    avg_confidence = df['confidence'].mean() if 'confidence' in df else 0
+
     total_queries = len(df)
     
     all_topics = []
     for insight in history:
         all_topics.extend(insight.get('key_topics', []))
     
-    unique_topics = len(set(all_topics))
+    unique_topics = len(set(all_topics)) if all_topics else 0
     
     return {
         'total_queries': total_queries,
