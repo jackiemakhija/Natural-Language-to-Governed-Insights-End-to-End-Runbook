@@ -9,10 +9,15 @@ import os
 from pathlib import Path
 from datetime import datetime
 import logging
+import requests
 
 # Import local modules
 from src.nlp_processor import NLPProcessor
 from src.insights_generator import InsightsGenerator
+
+# Global variables
+QUERY_COUNT = 0
+GITHUB_REPO = "jagjeetmakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook"
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -67,6 +72,26 @@ if 'insights_history' not in st.session_state:
     st.session_state.insights_history = []
 if 'query_count' not in st.session_state:
     st.session_state.query_count = 0
+if 'github_stats' not in st.session_state:
+    st.session_state.github_stats = None
+
+
+def fetch_github_stats():
+    """Fetch GitHub repository statistics - shows download/engagement metrics"""
+    try:
+        response = requests.get(f"https://api.github.com/repos/{GITHUB_REPO}", timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            return {
+                "stars": data.get("stargazers_count", 0),
+                "forks": data.get("forks_count", 0),
+                "watchers": data.get("watchers_count", 0),
+                "url": data.get("html_url", "")
+            }
+    except Exception as e:
+        logger.warning(f"Failed to fetch GitHub stats: {e}")
+    return {"stars": 0, "forks": 0, "watchers": 0, "url": ""}
+
 
 
 def load_sample_data():
@@ -256,6 +281,33 @@ def main():
     
     st.sidebar.markdown("---")
     
+    # Fetch and display GitHub stats
+    if st.session_state.github_stats is None:
+        st.session_state.github_stats = fetch_github_stats()
+    
+    github_stats = st.session_state.github_stats
+    
+    st.sidebar.markdown("### 📥 App Downloaded Till Date")
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        st.metric("⭐ GitHub Stars", github_stats.get("stars", 0))
+    with col2:
+        st.metric("🍴 Forks", github_stats.get("forks", 0))
+    
+    st.sidebar.markdown(f"[🔗 View on GitHub →]({github_stats.get('url', 'https://github.com/jagjeetmakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook')})")
+    
+    st.sidebar.markdown("---")
+    
+    # Query metrics
+    st.sidebar.metric("Queries Processed", st.session_state.query_count)
+    if st.session_state.insights_history:
+        last_insight = st.session_state.insights_history[-1]
+        st.sidebar.metric("Last Sentiment", last_insight['sentiment']['sentiment'].title())
+        st.sidebar.metric("Key Topics", len(last_insight['key_topics']))
+    else:
+        st.sidebar.metric("Last Sentiment", "—")
+        st.sidebar.metric("Key Topics", 0)
+    
     # Main content
     tab1, tab2, tab3 = st.tabs(["🔍 Analyze Text", "📊 Sample Data", "📈 History"])
     
@@ -324,16 +376,6 @@ def main():
                 st.rerun()
         else:
             st.info("No analysis history yet. Start by analyzing some text!")
-    
-    # Sidebar metrics (updated after interactions)
-    st.sidebar.metric("Queries Processed", st.session_state.query_count)
-    if st.session_state.insights_history:
-        last_insight = st.session_state.insights_history[-1]
-        st.sidebar.metric("Last Sentiment", last_insight['sentiment']['sentiment'].title())
-        st.sidebar.metric("Key Topics", len(last_insight['key_topics']))
-    else:
-        st.sidebar.metric("Last Sentiment", "—")
-        st.sidebar.metric("Key Topics", 0)
 
     # Footer
     st.markdown("---")
