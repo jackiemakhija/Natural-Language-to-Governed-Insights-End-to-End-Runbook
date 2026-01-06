@@ -94,7 +94,7 @@ def load_session_history():
     return []
 
 
-# Initialize session state (after helper definitions to avoid NameError)
+# Initialize session state (must be after helper definitions to avoid NameError on first load)
 if 'insights_history' not in st.session_state:
     st.session_state.insights_history = load_session_history()
 if 'query_count' not in st.session_state:
