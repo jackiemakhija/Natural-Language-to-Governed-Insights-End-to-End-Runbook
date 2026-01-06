@@ -4,21 +4,13 @@ azure-core>=1.29.0
 azure-identity>=1.15.0
 azure-storage-blob>=12.19.0
 
+# Web UI
+streamlit>=1.28.0
+
 # Data processing
 pandas>=2.0.0
 numpy>=1.24.0
 
-# NLP and AI
-openai>=1.0.0
-langchain>=0.1.0
-semantic-kernel>=0.9.0
-
-# API and web
-fastapi>=0.104.0
-uvicorn>=0.24.0
-requests>=2.31.0
-
 # Utilities
 python-dotenv>=1.0.0
 pydantic>=2.5.0
-pyyaml>=6.0

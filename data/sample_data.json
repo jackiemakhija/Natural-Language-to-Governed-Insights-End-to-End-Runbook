@@ -14,29 +14,166 @@
     },
     {
       "id": "q003",
-      "text": "Identify areas needing improvement in customer service",
+      "text": "Analyze quarterly sales performance and customer sentiment",
       "timestamp": "2025-12-10T09:15:00Z",
-      "user": "director1"
+      "user": "sales_director"
+    },
+    {
+      "id": "q004",
+      "text": "Compare product satisfaction across different categories",
+      "timestamp": "2025-12-12T11:00:00Z",
+      "user": "product_manager"
+    },
+    {
+      "id": "q005",
+      "text": "What do customers say about our pricing and value?",
+      "timestamp": "2025-12-15T14:45:00Z",
+      "user": "pricing_analyst"
+    },
+    {
+      "id": "q006",
+      "text": "Identify trends in annual customer feedback",
+      "timestamp": "2025-12-18T10:30:00Z",
+      "user": "vp_customer_success"
+    },
+    {
+      "id": "q007",
+      "text": "How is our new feature performing with users?",
+      "timestamp": "2025-12-20T15:00:00Z",
+      "user": "product_lead"
     }
   ],
   "sample_feedback": [
     {
       "id": "fb001",
-      "text": "The customer service was excellent and resolved my issue quickly.",
-      "category": "support",
-      "date": "2025-12-15"
+      "text": "Q4 sales exceeded expectations! Our revenue grew 35% year-over-year. The new product line is performing exceptionally well with fantastic customer response.",
+      "category": "sales_performance",
+      "date": "2025-12-15",
+      "metrics": "Q4 Revenue +35% YoY"
     },
     {
       "id": "fb002",
-      "text": "Very disappointed with the long wait times and lack of communication.",
-      "category": "support",
-      "date": "2025-12-16"
+      "text": "Average order value increased to $127 this quarter, up from $98 last year. Premium products are driving excellent margins and customer satisfaction is very high.",
+      "category": "sales_metrics",
+      "date": "2025-12-16",
+      "metrics": "AOV: $127 (+30%)"
     },
     {
       "id": "fb003",
-      "text": "The product quality exceeded my expectations. Great experience overall.",
-      "category": "product",
-      "date": "2025-12-17"
+      "text": "Product Category A consistently outperforms others with average customer rating of 4.8/5 and 92% repeat purchase rate. Customers love the quality and reliability.",
+      "category": "product_performance",
+      "date": "2025-12-17",
+      "metrics": "Rating: 4.8/5, Repeat: 92%"
+    },
+    {
+      "id": "fb004",
+      "text": "Annual review shows disappointing results in customer retention. Only 68% retention rate this year compared to 78% industry average. Need urgent improvement.",
+      "category": "retention_metrics",
+      "date": "2025-12-18",
+      "metrics": "Retention: 68% (-10% vs industry)"
+    },
+    {
+      "id": "fb005",
+      "text": "Our newest product launch was amazing! First month sales hit $2.1M, exceeding forecast by 40%. Customer reviews are overwhelmingly positive with 4.9 star average.",
+      "category": "product_launch",
+      "date": "2025-12-19",
+      "metrics": "Launch Sales: $2.1M (+40% vs forecast)"
+    },
+    {
+      "id": "fb006",
+      "text": "Quarterly customer satisfaction scores are mixed. Overall CSAT is 7.2/10 - decent but not great. Support response times need improvement to reach our 8.5 target.",
+      "category": "satisfaction_metrics",
+      "date": "2025-12-20",
+      "metrics": "CSAT: 7.2/10 (Target: 8.5)"
+    },
+    {
+      "id": "fb007",
+      "text": "Regional sales analysis reveals outstanding performance in East region (+45%) and West region (+38%). Excellent work by sales teams with great customer engagement!",
+      "category": "regional_sales",
+      "date": "2025-12-21",
+      "metrics": "East: +45%, West: +38%"
+    },
+    {
+      "id": "fb008",
+      "text": "Product returns increased to 8.5% this quarter, up from 5.2% last year. Poor quality control issues with Batch 2024-Q4. Customers are very unhappy and frustrated.",
+      "category": "quality_metrics",
+      "date": "2025-12-22",
+      "metrics": "Returns: 8.5% (+3.3% YoY)"
+    },
+    {
+      "id": "fb009",
+      "text": "Annual revenue reached $12.4M, achieving 28% growth over last year! Fantastic team performance across all departments. Customer base expanded by 2,400 new accounts.",
+      "category": "annual_performance",
+      "date": "2025-12-23",
+      "metrics": "Annual Revenue: $12.4M (+28%)"
+    },
+    {
+      "id": "fb010",
+      "text": "Cross-sell performance is excellent with average 2.3 products per customer, up from 1.8 last year. Customers appreciate our product recommendations and bundling options.",
+      "category": "cross_sell_metrics",
+      "date": "2025-12-24",
+      "metrics": "Products/Customer: 2.3 (+28%)"
+    },
+    {
+      "id": "fb011",
+      "text": "Customer support metrics show terrible results this month. Average wait time is 12 minutes vs 3 minute target. Response quality scores dropped to 6.8/10. Need immediate action.",
+      "category": "support_metrics",
+      "date": "2025-12-25",
+      "metrics": "Wait Time: 12min, Quality: 6.8/10"
+    },
+    {
+      "id": "fb012",
+      "text": "Premium tier customers show outstanding loyalty with 95% renewal rate and $1,850 average annual value. These customers love our exclusive features and priority support.",
+      "category": "customer_segments",
+      "date": "2025-12-26",
+      "metrics": "Premium Renewal: 95%, AAV: $1,850"
+    }
+  ],
+  "demo_scenarios": [
+    {
+      "name": "Quarterly Sales Performance Review",
+      "description": "Analyze quarterly sales data and customer sentiment trends",
+      "queries": [
+        "Analyze Q4 sales performance and customer feedback",
+        "What do customers say about our pricing and value?",
+        "Identify trends in quarterly revenue growth"
+      ]
+    },
+    {
+      "name": "Annual Business Performance",
+      "description": "Evaluate yearly metrics including revenue, retention, and growth",
+      "queries": [
+        "Review annual revenue performance and customer sentiment",
+        "How is customer retention trending year-over-year?",
+        "What are the key drivers of annual growth?"
+      ]
+    },
+    {
+      "name": "Product Performance Analysis",
+      "description": "Compare product categories and customer satisfaction",
+      "queries": [
+        "Which products have the highest customer satisfaction?",
+        "Analyze product quality feedback across categories",
+        "What products are driving the most positive sentiment?"
+      ]
+    },
+    {
+      "name": "Customer Metrics Dashboard",
+      "description": "Review customer satisfaction, retention, and support metrics",
+      "queries": [
+        "Analyze customer satisfaction scores and trends",
+        "What are customers saying about support quality?",
+        "Identify areas for improving customer experience"
+      ]
+    },
+    {
+      "name": "Regional Sales Comparison",
+      "description": "Compare performance across different sales regions",
+      "queries": [
+        "Which regions show the strongest sales growth?",
+        "Analyze regional customer feedback patterns",
+        "Compare satisfaction levels across territories"
+      ]
     }
   ]
 }
