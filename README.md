@@ -1,242 +1,254 @@
-# Natural Language to Governed Insights - End-to-End Runbook
+---
+title: Natural Language to Governed Insights
+emoji: 🧠
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_file: Dockerfile
+pinned: false
+license: mit
+---
 
-**Transform natural language questions into governed insights using Microsoft Fabric + Foundry Local LLM**
+# Natural Language to Governed Insights 🧠
 
-## 📖 Overview
+Transform natural language questions into governed insights using Azure AI Services. This application demonstrates NLP-powered sentiment analysis, key phrase extraction, and automated insight generation.
 
-This project builds an end-to-end **Natural Language to Insights** experience where a local LLM generates governed DAX queries and executes them against Power BI Semantic Models, ensuring compliance with centralized KPIs and security policies.
+<div align="center">
+  <img src="https://img.shields.io/badge/Python-3.11-blue" alt="Python 3.11"/>
+  <img src="https://img.shields.io/badge/Streamlit-1.28-red" alt="Streamlit"/>
+  <img src="https://img.shields.io/badge/Azure_AI-Enabled-blue" alt="Azure AI"/>
+</div>
 
-**Source:** [GitHub Repository by Jagjeet Makhija](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook)
+## ✨ Features
 
-**LinkedIn Article:** [Natural Language Governed Insights](https://www.linkedin.com/pulse/natural-language-governed-insights-end-to-end-runbook-jagjeet-makhija-arbtc/)
+### 🤖 Natural Language Processing
+- **Sentiment Analysis**: Automatically detect positive, negative, or neutral sentiment
+- **Key Phrase Extraction**: Identify important topics and themes
+- **Entity Recognition**: Extract people, organizations, locations from text
+- **Automated Insights**: Generate actionable recommendations based on analysis
 
-## 🎯 Architecture Flow
+### 🎯 Use Cases
+- Customer feedback analysis
+- Support ticket categorization
+- Product review insights
+- Social media monitoring
+- Survey response analysis
+- Quality assurance monitoring
+
+### 💡 Demo Mode
+- Works out-of-the-box with **mock responses** (no Azure credentials needed)
+- Configure Azure AI credentials for **real-time analysis**
+- Perfect for testing and demonstrations
+
+## 🚀 Live Demo
+
+Try these sample queries:
+1. "What are the main customer complaints this month?"
+2. "Show me the positive feedback trends"
+3. "Identify areas needing improvement in customer service"
+
+## 🏗️ Architecture
 
 ```
-Natural Language Question
+User Input
     ↓
-Foundry Local LLM (generates DAX)
+Natural Language Query
     ↓
-Power BI Semantic Model (governed KPIs + RLS)
+Azure AI Text Analytics
+    ├─> Sentiment Analysis
+    ├─> Key Phrase Extraction
+    └─> Entity Recognition
     ↓
-Power BI ExecuteQueries API
+Insights Generator
+    ├─> Pattern Detection
+    ├─> Recommendation Engine
+    └─> Confidence Scoring
     ↓
-Results Display & Export
+Visualized Results
 ```
 
-## 🚀 Quick Start
+## 🔧 Configuration (Optional)
 
-### Prerequisites
+### For Full Azure AI Integration
 
-- **Microsoft Fabric** access (permission to create Workspace, Warehouse, and Semantic Model)
-- **Azure CLI** installed: [Install Guide](https://learn.microsoft.com/cli/azure/install-azure-cli)
-- **Python 3.10+** on your local machine
-- **Foundry Local** installed and running at `http://127.0.0.1:51970/v1`
+This Space can run in two modes:
 
-### Installation
+**1. Demo Mode (Default)**
+- No configuration needed
+- Uses mock responses
+- Perfect for testing
 
-```powershell
-# Navigate to project directory
-cd NL-Governed-Insights
+**2. Azure AI Mode (Full Features)**
+Add these secrets in Space Settings:
 
-# Create virtual environment
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1  # Windows PowerShell
+| Secret Name | Description | How to Get |
+|-------------|-------------|------------|
+| `AZURE_TEXT_ANALYTICS_ENDPOINT` | Azure Text Analytics endpoint | Azure Portal → Text Analytics Resource |
+| `AZURE_TEXT_ANALYTICS_KEY` | Azure API key | Resource → Keys and Endpoint |
 
-# Install dependencies
-pip install --upgrade pip
-pip install -r requirements.txt
+### Setting Up Azure Text Analytics (Optional)
 
-# Configure environment
-copy .env.template .env
-# Edit .env with your settings
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Create a **Text Analytics** resource
+3. Copy the **Endpoint** and **Key**
+4. Add them as secrets in your HF Space
+
+## 📊 Sample Data Included
+
+### Pre-loaded Feedback Examples
+- ✅ Customer service feedback
+- ✅ Product quality reviews
+- ✅ Shipping & logistics comments
+- ✅ Website usability feedback
+
+### Demo Scenarios
+1. **Customer Service Analysis** - Analyze support team performance
+2. **Product Quality Assessment** - Evaluate product satisfaction
+3. **Shipping & Logistics Review** - Understand delivery experience
+
+## 🧪 How to Use
+
+### Method 1: Custom Text Analysis
+1. Enter your text in the input box
+2. Click **Analyze**
+3. Review sentiment, key phrases, and recommendations
+
+### Method 2: Sample Queries
+1. Click any sample query button
+2. Instant analysis results appear
+3. Review detailed breakdown
+
+### Method 3: Analyze Sample Feedback
+1. Go to **Sample Data** tab
+2. Expand any feedback item
+3. Click **Analyze This Feedback**
+
+## 📈 Features in Detail
+
+### Sentiment Analysis
+- Classifies text as positive, negative, or neutral
+- Provides confidence scores for each sentiment
+- Tracks sentiment trends over time
+
+### Key Phrase Extraction
+- Identifies main topics and themes
+- Highlights important keywords
+- Groups related concepts
+
+### Automated Recommendations
+- Generates actionable insights
+- Suggests next steps based on sentiment
+- Prioritizes critical issues
+
+### Analysis History
+- Track all processed queries
+- Review past insights
+- Export results for reporting
+
+## 🎓 Technology Stack
+
+- **Frontend**: Streamlit (Python web framework)
+- **NLP Engine**: Azure AI Text Analytics
+- **Language**: Python 3.11
+- **Deployment**: Docker on Hugging Face Spaces
+- **Cloud**: Azure AI Services (optional)
+
+## 🔒 Security & Governance
+
+- **Data Privacy**: No data stored permanently
+- **Secure Credentials**: All secrets encrypted by HF Spaces
+- **Compliance Ready**: Enterprise-grade security practices
+- **Audit Trail**: All operations logged
+- **Access Control**: Can be integrated with Azure RBAC
+
+## 💡 Real-World Applications
+
+### Customer Experience
+- Monitor customer satisfaction in real-time
+- Identify trending issues before they escalate
+- Track improvement over time
+
+### Support Operations
+- Automatically categorize support tickets
+- Prioritize urgent issues
+- Measure team performance
+
+### Product Management
+- Understand feature reception
+- Gather user sentiment on launches
+- Guide product roadmap decisions
+
+### Marketing & Social
+- Monitor brand sentiment
+- Track campaign performance
+- Identify influencer opportunities
+
+## 📖 Example Outputs
+
+### Positive Sentiment Example
+```
+Text: "The customer service was excellent and resolved my issue quickly."
+Sentiment: POSITIVE (75% confidence)
+Key Topics: customer service, resolved issue
+Recommendations:
+- Maintain current positive practices
+- Share success stories with team
 ```
 
-### Start Foundry Local
-
-```bash
-foundry service start
-foundry model run qwen2.5-14b-instruct
-curl http://127.0.0.1:51970/v1/models  # Verify
+### Negative Sentiment Example
+```
+Text: "Very disappointed with the long wait times and lack of communication."
+Sentiment: NEGATIVE (75% confidence)
+Key Topics: wait times, lack communication
+Recommendations:
+- Consider addressing negative feedback promptly
+- Investigate root causes of dissatisfaction
 ```
 
-### Launch the Application
+## 🚦 Getting Started
 
-```bash
-streamlit run main.py
-```
+### Immediate Use
+1. Open the Space
+2. Try sample queries
+3. Analyze your own text
 
-Application will open at: `http://localhost:8501`
+### With Azure AI (Optional)
+1. Configure Azure secrets
+2. Restart Space
+3. Enjoy full NLP capabilities
 
-## 📁 Project Structure
+## 🔗 Resources
 
-This folder contains a **simplified version** for demonstration. The full implementation is available in the [GitHub repository](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook).
-
-```
-NL-Governed-Insights/
-├── README.md                    # This file
-├── architecture.md              # Architecture documentation
-├── main.py                      # Demo application entry point
-├── requirements.txt             # Python dependencies
-├── .env.template                # Environment variables template
-│
-├── src/                         # Source code modules
-│   ├── __init__.py
-│   ├── data_ingestion.py       # Data ingestion from Azure
-│   ├── nlp_processor.py        # NLP processing with Azure AI
-│   └── insights_generator.py   # Insights generation engine
-│
-├── config/                      # Configuration files
-│   └── settings.json           # Application settings
-│
-└── data/                        # Sample data
-    └── sample_data.json        # Demo queries and feedback
-```
-
-## 🏗️ Full Repository Structure
-
-For the **complete production-ready implementation**, refer to the GitHub repository:
-
-```
-github_release/
-├── app.py                          # Main Streamlit multi-page application
-├── config.py                       # Centralized configuration
-├── requirements.txt                # Python dependencies
-├── .env.example                    # Environment template
-│
-├── modules/                        # Core business logic
-│   ├── token_manager.py           # Azure AD authentication
-│   ├── workspace_manager.py       # Workspace/dataset discovery
-│   ├── fabric_dax_generator.py    # LLM-based DAX generation
-│   └── power_bi_executor.py       # Power BI ExecuteQueries API client
-│
-├── pages/                          # Streamlit UI pages
-│   ├── workspace_config.py        # Settings page
-│   └── semantic_query.py          # Semantic Query page (NL→DAX→Results)
-│
-├── components/                     # Reusable UI components
-│   └── results_display.py         # Results formatting & export
-│
-├── sql/                            # Sample SQL scripts
-│   └── sample_warehouse_setup.sql # Fabric Warehouse DDL & data
-│
-├── dax/                            # DAX query examples
-│   └── sample_queries.dax         # Example DAX patterns
-│
-├── scripts/                        # Setup automation
-│   ├── setup_foundry.sh           # Foundry Local setup
-│   └── setup_auth_azure.ps1       # Azure CLI authentication
-│
-└── docs/                           # Documentation
-    ├── RUNBOOK_CODE_MAPPING.md    # Runbook → Code mapping
-    ├── CODE_REFERENCE_GUIDE.md    # Quick reference guide
-    └── NL_to_Governed_Insights_End_to_End_Runbook.docx
-```
-
-## 🎨 Features
-
-### Multi-Page Streamlit Application
-
-1. **💬 Chat Page**
-   - Intelligent Foundry Local chat
-   - Auto model routing (Phi for simple, Qwen for complex queries)
-   - Manual model selection option
-
-2. **⚙️ Settings Page**
-   - Azure AD authentication (CLI or App Registration)
-   - Workspace and dataset discovery
-   - Connection validation
-
-3. **📊 Semantic Query Page**
-   - Natural language input
-   - Automatic DAX generation
-   - DAX validation and editing
-   - Query execution against semantic models
-   - Results export (CSV, JSON)
-
-### Key Capabilities
-
-- ✅ **Governed KPIs**: All queries use certified measures from semantic models
-- ✅ **Row-Level Security**: Enforced through Power BI semantic models
-- ✅ **Local LLM**: Foundry Local for offline DAX generation
-- ✅ **Azure Integration**: Seamless authentication and resource discovery
-- ✅ **Export Options**: Download results as CSV or JSON
-
-## 📊 Example Queries
-
-Try these natural language questions:
-
-- "What is total revenue?"
-- "Show revenue by month for this year"
-- "What is the profit margin percentage?"
-- "Revenue YTD by sales region"
-- "Top 10 products by quantity sold"
-
-## 🔧 Configuration
-
-### Environment Variables (.env)
-
-```bash
-# Foundry Local Configuration
-FOUNDRY_BASE=http://127.0.0.1:51970/v1
-FOUNDRY_MODEL_PHI=phi-3-mini
-FOUNDRY_MODEL_QWEN=qwen2.5-14b-instruct
-FOUNDRY_TIMEOUT=180
-
-# Power BI / Fabric Configuration
-POWER_BI_WORKSPACE_ID=your_workspace_id
-POWER_BI_DATASET_ID=your_dataset_id
-
-# Azure AD / Tenant
-AZURE_TENANT_ID=your_tenant_id
-```
-
-## 📚 Documentation & Resources
-
-### GitHub Repository
-- **Main Repository:** https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook
-- **README:** [Full Documentation](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/README.md)
-- **Code Reference Guide:** [Reference](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/docs/CODE_REFERENCE_GUIDE.md)
-
-### Key Files in Repository
-- **app.py** - Main Streamlit application ([View](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/app.py))
-- **modules/fabric_dax_generator.py** - DAX generation ([View](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/modules/fabric_dax_generator.py))
-- **modules/power_bi_executor.py** - Query execution ([View](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/modules/power_bi_executor.py))
-- **sql/sample_warehouse_setup.sql** - SQL examples ([View](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/sql/sample_warehouse_setup.sql))
-- **dax/sample_queries.dax** - DAX examples ([View](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook/blob/main/dax/sample_queries.dax))
-
-## 🛠️ Troubleshooting
-
-**Foundry Local not reachable:**
-- Confirm service is running: `curl http://127.0.0.1:51970/v1/models`
-
-**ExecuteQueries 401/403:**
-- Ensure access token is valid
-- Check Power BI permissions for workspace/dataset
-
-**Empty results:**
-- Try simpler question
-- Confirm semantic model contains data and measures
-
-**Slow responses:**
-- Use smaller local model (Phi instead of Qwen)
-- Reduce prompt verbosity
-
-## 🚀 Next Steps
-
-1. **Clone full repository** for production-ready code
-2. **Set up Microsoft Fabric** workspace and warehouse
-3. **Create semantic model** with governed KPIs
-4. **Configure authentication** (Azure CLI or App Registration)
-5. **Start Foundry Local** with your preferred model
-6. **Run the application** and explore!
+- [Azure AI Text Analytics Docs](https://learn.microsoft.com/azure/cognitive-services/language-service/)
+- [Streamlit Documentation](https://docs.streamlit.io)
+- [GitHub Repository](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook)
+- [LinkedIn Article](https://www.linkedin.com/pulse/natural-language-governed-insights-end-to-end-runbook-jagjeet-makhija-arbtc/)
 
 ## 📝 License
 
-See LICENSE file for details.
+MIT License - Free to use for personal and commercial projects
+
+## 🤝 Contributing
+
+Contributions welcome! This project demonstrates best practices for:
+- NLP-powered analytics
+- Azure AI integration
+- Governed insight generation
+- Enterprise-ready deployments
+
+## 💬 Feedback
+
+Found an issue or have a suggestion? Open an issue on the GitHub repository.
+
+## 🎯 Next Steps
+
+1. **Try It Now** - Start with sample queries
+2. **Analyze Your Data** - Paste your own feedback/reviews
+3. **Configure Azure** - Enable full AI capabilities
+4. **Export Insights** - Use for reporting and decision-making
 
 ---
 
-**Last Updated:** December 26, 2025  
-**Version:** 1.0  
-**Status:** Demo/Reference Implementation
+**Built with ❤️ for the data and AI community**
+
+*Transform unstructured feedback into actionable insights with the power of Azure AI*

@@ -4,7 +4,6 @@ emoji: 🧠
 colorFrom: blue
 colorTo: green
 sdk: docker
-sdk_version: "1.0"
 app_file: Dockerfile
 pinned: false
 license: mit
