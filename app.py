@@ -72,17 +72,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state
-if 'insights_history' not in st.session_state:
-    st.session_state.insights_history = load_session_history()
-if 'query_count' not in st.session_state:
-    st.session_state.query_count = len(st.session_state.insights_history)
-if 'github_stats' not in st.session_state:
-    st.session_state.github_stats = None
-if 'github_stats_timestamp' not in st.session_state:
-    st.session_state.github_stats_timestamp = None
-
-
 def save_session_history():
     """Save session history to file for persistence"""
     try:
@@ -103,6 +92,17 @@ def load_session_history():
     except Exception as e:
         logger.warning(f"Failed to load session history: {e}")
     return []
+
+
+# Initialize session state (after helper definitions to avoid NameError)
+if 'insights_history' not in st.session_state:
+    st.session_state.insights_history = load_session_history()
+if 'query_count' not in st.session_state:
+    st.session_state.query_count = len(st.session_state.insights_history)
+if 'github_stats' not in st.session_state:
+    st.session_state.github_stats = None
+if 'github_stats_timestamp' not in st.session_state:
+    st.session_state.github_stats_timestamp = None
 
 
 def create_sentiment_distribution_chart(history):
