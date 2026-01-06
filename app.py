@@ -550,6 +550,13 @@ def main():
     repo_url = github_stats.get("url", f"https://github.com/{GITHUB_REPO}")
     st.sidebar.markdown(f"[🔗 View on GitHub →]({repo_url})")
 
+    # Last fetched timestamp
+    if st.session_state.github_stats_timestamp:
+        last_fetched = datetime.fromtimestamp(st.session_state.github_stats_timestamp).strftime("%Y-%m-%d %H:%M")
+        st.sidebar.caption(f"Last fetched at: {last_fetched} (UTC)")
+    else:
+        st.sidebar.caption("GitHub stats not yet fetched")
+
     if stars == 0 and forks == 0:
         st.sidebar.caption("GitHub stats may show 0 if unauthenticated or rate-limited. Optionally set GITHUB_TOKEN.")
     
