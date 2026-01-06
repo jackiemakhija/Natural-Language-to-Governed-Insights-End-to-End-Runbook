@@ -34,6 +34,9 @@ TOTAL: 8/8 tests passed (100.0%)
 - ✅ Sentiment distribution pie chart
 - ✅ Confidence trend line chart
 - ✅ Top 10 topics bar chart
+- ✅ Sentiment timeline (stacked area)
+- ✅ Confidence distribution (histogram)
+- ✅ Topic treemap (6 charts total)
 - ✅ Summary statistics
 - ✅ Interactive charts (Plotly)
 
@@ -50,12 +53,12 @@ TOTAL: 8/8 tests passed (100.0%)
 ### GitHub
 - **URL**: https://github.com/jagjeetmakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook
 - **Status**: ✅ Live (HTTP 200)
-- **Latest**: Commit 9396b8d
+- **Latest**: Commit 88fee4f
 
 ### HuggingFace
 - **URL**: https://huggingface.co/spaces/jackiemakhija/Natural-Language-to-Governed-Insights
 - **Status**: ✅ Live (HTTP 200)
-- **Latest**: Commit 9396b8d (synced)
+- **Latest**: Commit 88fee4f (synced)
 
 ---
 
@@ -166,17 +169,17 @@ git log --oneline -5
 
 ## 🌟 Recent Updates
 
-### Latest Features (Commit 5187d4a)
-- Session persistence (save/load history)
-- Visual analytics dashboard
-- 3 interactive charts
-- CSV & JSON export
-- Summary statistics
+### Advanced Analytics (Commit 92d60ec)
+- Sentiment timeline (stacked area chart)
+- Confidence distribution (histogram)
+- Topic treemap visualization
+- 6 total interactive charts
 
-### Latest Cleanup (Commit 9396b8d)
-- Removed test artifacts
-- Removed extra documentation
-- Streamlined to 17 essential files
+### GitHub Stats & UI Improvements (Commit 88fee4f)
+- Last fetched timestamp display
+- Chart function indentation fixes
+- GitHub token authentication support
+- Robust error handling
 - Production-ready state
 
 ---
@@ -242,5 +245,5 @@ git log --oneline -5
 ---
 
 **Last Updated**: January 6, 2026  
-**Version**: 2.0  
-**Commit**: 9396b8d
+**Version**: 2.1  
+**Commit**: 88fee4f (Advanced Analytics + GitHub Stats)
