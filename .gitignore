@@ -1,31 +1,37 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+.pytype/
+.pyre/
 
-# Environment variables
-.env
-.env.local
-
-# Virtual environment
+# Environments
+.venv/
 venv/
 env/
-ENV/
+.env
+.env.*
 
-# IDE
+# Jupyter
+.ipynb_checkpoints/
+
+# Editors
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# Output files
-*.log
-insights_output.json
+# OS
+.DS_Store
+Thumbs.db
 
-# Azure
-.azure/
-
-# Distribution / packaging
-dist/
-build/
-*.egg-info/
+# Node (if present)
+node_modules/
