@@ -41,6 +41,7 @@ Transform natural language questions into governed insights using Azure AI Servi
 - Perfect for testing and demonstrations
 
 
+
 ## 🚀 Live Demo
 
 ### Hugging Face Space
@@ -48,6 +49,12 @@ Transform natural language questions into governed insights using Azure AI Servi
 Try the app live on Hugging Face Spaces:
 
 [Natural-Language-to-Governed-Insights on Hugging Face Spaces](https://huggingface.co/spaces/jackiemakhija/Natural-Language-to-Governed-Insights)
+
+### GitHub Repository
+
+View the full source code and contribute on GitHub:
+
+[https://github.com/jagjeetmakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook](https://github.com/jagjeetmakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook)
 
 ### Sample Queries
 1. "What are the main customer complaints this month?"
