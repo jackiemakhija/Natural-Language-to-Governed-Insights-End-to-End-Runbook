@@ -40,9 +40,16 @@ Transform natural language questions into governed insights using Azure AI Servi
 - Configure Azure AI credentials for **real-time analysis**
 - Perfect for testing and demonstrations
 
+
 ## 🚀 Live Demo
 
-Try these sample queries:
+### Hugging Face Space
+
+Try the app live on Hugging Face Spaces:
+
+[Natural-Language-to-Governed-Insights on Hugging Face Spaces](https://huggingface.co/spaces/jackiemakhija/Natural-Language-to-Governed-Insights)
+
+### Sample Queries
 1. "What are the main customer complaints this month?"
 2. "Show me the positive feedback trends"
 3. "Identify areas needing improvement in customer service"
@@ -221,7 +228,7 @@ Recommendations:
 
 - [Azure AI Text Analytics Docs](https://learn.microsoft.com/azure/cognitive-services/language-service/)
 - [Streamlit Documentation](https://docs.streamlit.io)
-- [GitHub Repository](https://github.com/jackiemakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook)
+- [GitHub Repository](https://github.com/jagjeetmakhija/Natural-Language-to-Governed-Insights-End-to-End-Runbook)
 - [LinkedIn Article](https://www.linkedin.com/pulse/natural-language-governed-insights-end-to-end-runbook-jagjeet-makhija-arbtc/)
 
 ## 📝 License
