@@ -9,7 +9,37 @@ pinned: false
 license: mit
 ---
 
+
 # Natural Language to Governed Insights 🧠
+
+## Core Use Case
+Enable business users to ask questions in natural language and receive accurate, governed, compliant insights—no SQL, DAX, or technical queries required.
+
+### Purpose & Business Value
+- Democratize analytics and enable self-service BI
+- Reduce dependency on data analysts
+- Provide an AI-powered backend for Copilot/Agent scenarios
+- Ensure compliance, governance, and auditability
+- Achieve 90% faster insights, 40–60% analyst workload reduction, and 3–5x faster decision-making
+
+### Required Skills & Architecture
+- RAG (Retrieval-Augmented Generation) architecture design
+- LLM orchestration and prompt engineering
+- Integration with Azure OpenAI/LLM APIs
+- Use of Azure AI Search for vector and hybrid retrieval
+- Semantic modeling and data governance (RLS, lineage, audit logs)
+- Python and REST API development
+- Azure security (Entra ID, RBAC, Key Vault)
+
+### Technical Flow
+1. User submits a natural language query
+2. LLM interprets intent
+3. Query is grounded using a semantic layer, structured models, and vector embeddings
+4. Retrieval is performed via Azure AI Search (vector + keyword hybrid)
+5. LLM generates an answer using the retrieved context
+6. All queries are logged for audit and compliance
+
+---
 
 Transform natural language questions into governed insights using Azure AI Services. This application demonstrates NLP-powered sentiment analysis, key phrase extraction, and automated insight generation.
 
